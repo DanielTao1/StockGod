@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚀 股神交易平台</title>
+    <style>
+        :root {
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --primary: #1652f0;
+            --secondary: #808a9d;
+            --success: #00d395;
+            --danger: #ff4d4d;
+            --text-primary: #1e2a3b;
+            --text-secondary: #64748b;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --border-radius: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            background: var(--background);
+        }
+
+        .container {
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .balance-section {
+            background: linear-gradient(135deg, #1652f0 0%, #1a43b6 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .success-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .danger-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .income-total {
+            background: var(--success);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .stock-item {
+            padding: 16px;
+            margin: 8px 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            position: relative;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .input-group input {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .portfolio-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* 房屋升级样式 */
+        #homeModal .modal-content {
+            max-width: 90%;
+            min-width: 320px;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .home-level-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 15px 0;
+            width: 100%;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .home-level-card {
+            flex: 0 0 260px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            min-height: 340px;
+        }
+
+        .home-level-card.current {
+            border: 2px solid var(--success);
+            box-shadow: 0 0 15px rgba(0, 211, 149, 0.3);
+        }
+
+        .home-preview {
+            font-size: 3em;
+            margin: 15px 0;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .current-level-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .home-asset-item {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 12px;
+            margin: 8px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .home-level-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .home-level-container::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 4px;
+        }
+
+        .home-level-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .home-level-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="loginView" class="container">
+        <div class="card">
+            <h2 style="margin-top: 0; text-align: center;">🚀 股神交易平台</h2>
+            <input type="text" id="username" placeholder="用户名">
+            <input type="password" id="password" placeholder="密码">
+            <div style="display: grid; gap: 8px; margin-top: 16px;">
+                <button class="button primary-btn" onclick="login()">登录</button>
+                <button class="button secondary-btn" onclick="register()">注册新账户</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="mainView" class="container" style="display: none;">
+        <div class="balance-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 14px; opacity: 0.9;">总资产</div>
+                    <div id="totalBalance" style="font-size: 32px; font-weight: 700;">$0.00</div>
+                </div>
+                <div class="income-total">
+                    <span>📈 每秒收入</span>
+                    <span id="totalIncome">$0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                <h3 style="margin: 0;">📊 股票市场</h3>
+                <div class="income-total" style="background: var(--primary);">
+                    <span>🔄 实时行情</span>
+                </div>
+            </div>
+            <div id="stockList"></div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                <h3 style="margin: 0;">💰 资产组合</h3>
+                <div class="income-total" style="background: var(--primary);">
+                    <span>💸 被动收入</span>
+                    <span id="passiveIncomeTotal">$0/秒</span>
+                </div>
+            </div>
+            <div id="portfolioList"></div>
+            <div style="display: grid; gap: 8px; margin-top: 16px;">
+                <button class="button primary-btn" onclick="showShop()">🏪 资产商城</button>
+                <button class="button success-btn" onclick="showRedeem()">🎁 兑换奖励</button>
+                <button class="button secondary-btn" onclick="showHistory()">📜 交易记录</button>
+                <button class="button primary-btn" onclick="showHomeUpgrade()">🏠 我的家</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交易弹窗 -->
+    <div id="tradeModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;" id="tradeTitle"></h3>
+            <div style="background: #f8fafc; padding: 16px; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>当前价格</span>
+                    <span id="stockPrice" style="font-weight: 600;"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span id="availableBalanceLabel"></span>
+                    <span id="availableBalance"></span>
+                </div>
+            </div>
+            <div class="input-group">
+                <input type="number" id="tradeAmount" min="1" value="1">
+                <button class="button primary-btn" onclick="setMaxAmount()">MAX</button>
+            </div>
+            <div style="display: grid; gap: 8px;">
+                <button class="button success-btn" onclick="confirmTrade()">确认交易</button>
+                <button class="button danger-btn" onclick="closeModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">📜 交易记录</h3>
+            <div id="historyList" style="max-height: 60vh; overflow-y: auto;"></div>
+            <button class="button primary-btn" onclick="closeHistory()" style="margin-top: 16px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 商城弹窗 -->
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">🏪 资产商城</h3>
+            <div id="shopItemsList" style="max-height: 60vh; overflow-y: auto;"></div>
+            <button class="button primary-btn" onclick="closeShop()" style="margin-top: 16px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 兑换码弹窗 -->
+    <div id="redeemModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">🎁 兑换奖励码</h3>
+            <input type="text" id="redeemCode" placeholder="输入兑换码" class="input-full">
+            <div style="display: grid; gap: 8px; margin-top: 16px;">
+                <button class="button success-btn" onclick="redeemCode()">立即兑换</button>
+                <button class="button danger-btn" onclick="closeRedeem()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 出售资产弹窗 -->
+    <div id="sellAssetModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;" id="sellAssetTitle"></h3>
+            <div style="background: #f8fafc; padding: 16px; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>出售单价</span>
+                    <span id="assetPrice" style="font-weight: 600;"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>持有数量</span>
+                    <span id="assetAmount"></span>
+                </div>
+            </div>
+            <div class="input-group">
+                <input type="number" id="sellAssetAmount" min="1" value="1">
+                <button class="button primary-btn" onclick="setMaxAssetAmount()">MAX</button>
+            </div>
+            <div style="display: grid; gap: 8px;">
+                <button class="button success-btn" onclick="confirmSellAsset()">确认出售</button>
+                <button class="button danger-btn" onclick="closeSellAssetModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 房屋升级弹窗 -->
+    <div id="homeModal" class="modal">
+        <div class="modal-content">
+            <button class="button danger-btn" 
+                    onclick="closeHome()" 
+                    style="position: absolute; 
+                           top: 10px; 
+                           right: 10px; 
+                           padding: 8px 12px;
+                           z-index: 1001;">
+                ✖ 关闭
+            </button>
+            <h3 style="margin-top: 0;">🏠 房屋升级系统</h3>
+            <div class="home-level-container" id="homeLevels"></div>
+            <div class="card">
+                <h4>当前房屋信息</h4>
+                <div class="home-preview" id="currentHomePreview"></div>
+                <div>当前等级: <span id="currentHomeLevel">0</span> 级</div>
+                <div>每秒收入加成: +<span id="homeIncome">0</span>/秒</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// 股票数据
+let stocks = [
+    { name: "陶氏科技💾", price: 15000, initialPrice: 15000, capital: 1.5e11, trend: 0 },
+    { name: "生物医药🧪", price: 680, initialPrice: 680, capital: 6.8e8, trend: 0 },
+    { name: "陶氏新能源🔋", price: 1500, initialPrice: 1500, capital: 1.5e10, trend: 0 },
+    { name: "陶氏金融🏦", price: 8000, initialPrice: 8000, capital: 8e10, trend: 1 },
+    { name: "媒体网络🛜", price: 60, initialPrice: 60, capital: 6e8, trend: 0 },
+    { name: "陶氏地产🏡", price: 100000, initialPrice: 100000, capital: 1e12, trend: 0 },
+    { name: "陶氏时尚👗", price: 8, initialPrice: 8, capital: 8e7, trend: 0 },
+    { name: "旅游天地🏕️", price: 110, initialPrice: 110, capital: 1.1e9, trend: 0 },
+    { name: "食品国际🍱", price: 45, initialPrice: 45, capital: 4.5e8, trend: 0 },
+    { name: "陶氏医药🧬", price: 5000, initialPrice: 5000, capital: 5e10, trend: 0 }
+];
+
+// 商城商品
+const shopItems = [
+    { name: '普通汽车公司', price: 10000, income: 1, emoji: '🚗', desc: '基础代步工具' },
+    { name: '中等汽车公司', price: 200000, income: 25, emoji: '🚙', desc: '舒适出行体验' },
+    { name: '高级汽车公司', price: 3000000, income: 650, emoji: '🚎', desc: '身份的象征' },
+    { name: '陶氏豪华汽车公司', price: 30000000, income: 7000, emoji: '🏎️', desc: '陶氏贵族的象征' },
+    { name: 'Tsao奶茶店', price: 300000, income: 40, emoji: '🧋', desc: '奶茶连锁品牌' },
+    { name: '98K汉堡店', price: 500000, income: 80, emoji: '🍔', desc: '汉堡连锁品牌' },
+    { name: '中国川菜店', price: 1000000, income: 200, emoji: '🥘', desc: '川菜连锁品牌' },
+    { name: '陶氏6星米其林餐饮公司', price: 100000000, income: 30000, emoji: '🍷🍴', desc: '陶氏连锁品牌' },
+    { name: '普通房地产公司', price: 600000, income: 100, emoji: '🏚️', desc: '普通住宅' },
+    { name: '中等房地产公司', price: 2000000, income: 450, emoji: '🏠', desc: '温馨住宅' },
+    { name: '高级房地产公司', price: 5000000, income: 1200, emoji: '🏠', desc: '豪华居住体验' },
+    { name: '陶氏大别墅地产公司', price: 60000000, income: 15000, emoji: '🏡', desc: '陶氏贵族大别墅' }
+];
+
+// 用户系统
+let currentUser = null;
+let currentUsername = null;
+let currentTrade = null;
+let currentSellItem = null;
+
+function getUsers() {
+    return JSON.parse(localStorage.getItem('users')) || {};
+}
+
+function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+function saveUser() {
+    const users = getUsers();
+    users[currentUsername] = currentUser;
+    saveUsers(users);
+}
+
+function loadUser(username) {
+    const users = getUsers();
+    return users[username] ? {
+        password: users[username].password,
+        balance: users[username].balance || 10000,
+        portfolio: users[username].portfolio || {},
+        properties: users[username].properties || {},
+        history: users[username].history || [],
+        redeemedCodes: users[username].redeemedCodes || [],
+        homeLevel: users[username].homeLevel || 0
+    } : null;
+}
+
+// 注册功能
+function register() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+    }
+    
+    const users = getUsers();
+    if (users[username]) {
+        alert('用户名已存在');
+        return;
+    }
+    
+    currentUser = {
+        password: password,
+        balance: 10000,
+        portfolio: {},
+        properties: {},
+        history: [],
+        redeemedCodes: [],
+        homeLevel: 0
+    };
+    
+    currentUsername = username;
+    saveUser();
+    alert('注册成功，自动登录');
+    login();
+}
+
+// 登录功能
+function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    const users = getUsers();
+    if (!users[username]) {
+        alert('用户不存在');
+        return;
+    }
+    if (users[username].password !== password) {
+        alert('密码错误');
+        return;
+    }
+
+    currentUsername = username;
+    currentUser = loadUser(username);
+
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('mainView').style.display = 'block';
+    updateDisplay();
+    startStockUpdates();
+    startIncomeTimer();
+}
+
+// 股票系统
+function startStockUpdates() {
+    setInterval(() => {
+        stocks.forEach(stock => {
+            const prevPrice = stock.price;
+            stock.price = Math.round(stock.price * (0.95 + Math.random() * 0.1) * 100) / 100;
+            stock.trend = stock.price > prevPrice ? 1 : -1;
+            stock.capital = Math.round(stock.capital * (0.98 + Math.random() * 0.04));
+        });
+        renderStocks();
+        renderPortfolio();
+    }, 1000);
+}
+
+function renderStocks() {
+    const container = document.getElementById('stockList');
+    container.innerHTML = stocks.map(stock => {
+        const percentage = (
+            ((stock.price - stock.initialPrice) / stock.initialPrice) * 100
+        ).toFixed(2);
+        
+        return `
+            <div class="stock-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">${stock.name}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9em;">
+                            市值：$${stock.capital.toLocaleString()}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: ${stock.trend > 0 ? 'var(--success)' : 'var(--danger)'}; 
+                            font-weight: 600;">
+                            $${stock.price.toFixed(2)}
+                        </div>
+                        <div style="font-size: 0.9em; color: var(--text-secondary);">
+                            ${stock.trend > 0 ? '📈' : '📉'} 
+                            ${percentage >= 0 ? '+' : '-'} 
+                            ${Math.abs(percentage)}%
+                        </div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                    <button class="button success-btn" 
+                        onclick="showTrade('${stock.name}', 'buy')">买入</button>
+                    <button class="button danger-btn" 
+                        onclick="showTrade('${stock.name}', 'sell')">卖出</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 资产组合
+function renderPortfolio() {
+    const container = document.getElementById('portfolioList');
+    let totalStockValue = 0;
+
+    const stockContent = Object.keys(currentUser.portfolio).map(stockName => {
+        const shares = currentUser.portfolio[stockName];
+        const stock = stocks.find(s => s.name === stockName);
+        const value = shares * stock.price;
+        totalStockValue += value;
+        return `
+            <div class="portfolio-item">
+                <div>
+                    <div style="font-weight: 600;">${stockName}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9em;">
+                        持有 ${shares.toLocaleString()} 股
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success);">$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                    <div style="font-size: 0.9em; color: var(--text-secondary);">
+                        @ $${stock.price.toFixed(2)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const propertyContent = Object.keys(currentUser.properties).map(itemName => {
+        const item = shopItems.find(i => i.name === itemName);
+        const count = currentUser.properties[itemName];
+        return `
+            <div class="portfolio-item">
+                <div>
+                    <div style="font-weight: 600;">${item.emoji} ${itemName}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9em;">
+                        拥有 ${count}x
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success);">+$${(item.income * count).toLocaleString()}/秒</div>
+                    <div style="font-size: 0.9em; color: var(--text-secondary);">
+                        估值：$${(item.price * count * 0.9).toLocaleString()}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // 新增房屋资产显示
+    const homeConfig = homeLevelsConfig.find(l => l.level === currentUser.homeLevel);
+    const homeAsset = `
+        <div class="home-asset-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 600;">🏠 ${homeConfig.name}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9em;">
+                        等级 ${currentUser.homeLevel}
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success);">+$${homeConfig.income}/秒</div>
+                    <div style="font-size: 0.9em; color: var(--text-secondary);">
+                        累计花费：$${getHomeTotalCost().toLocaleString()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const totalAssets = currentUser.balance + totalStockValue + getHomeTotalCost();
+    document.getElementById('totalBalance').textContent = 
+        `$${totalAssets.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+
+    container.innerHTML = `
+        ${homeAsset}
+        ${stockContent || '<div style="color:var(--text-secondary); text-align:center;">暂无股票持仓</div>'}
+        ${propertyContent || ''}
+    `;
+}
+
+// 被动收入（已整合房屋加成）
+function startIncomeTimer() {
+    setInterval(() => {
+        let totalIncome = 0;
+        
+        // 资产收入
+        Object.keys(currentUser.properties).forEach(itemName => {
+            const item = shopItems.find(i => i.name === itemName);
+            totalIncome += item.income * currentUser.properties[itemName];
+        });
+        
+        // 房屋加成
+        const homeConfig = homeLevelsConfig.find(l => l.level === currentUser.homeLevel);
+        totalIncome += homeConfig.income;
+        
+        currentUser.balance += totalIncome;
+        
+        document.getElementById('totalIncome').textContent = `$${totalIncome.toLocaleString()}`;
+        document.getElementById('passiveIncomeTotal').textContent = `$${totalIncome.toLocaleString()}/秒`;
+        
+        saveUser();
+        updateDisplay();
+    }, 1000);
+}
+
+// 交易系统
+function showTrade(stockName, type) {
+    currentTrade = { stock: stockName, type };
+    const stock = stocks.find(s => s.name === stockName);
+    
+    document.getElementById('tradeTitle').textContent = 
+        `${type === 'buy' ? '买入' : '卖出'} ${stockName}`;
+    document.getElementById('stockPrice').textContent = 
+        `$${stock.price.toFixed(2)}`;
+    
+    if (type === 'buy') {
+        document.getElementById('availableBalanceLabel').textContent = '可用余额';
+        document.getElementById('availableBalance').textContent = 
+            `$${currentUser.balance.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    } else {
+        document.getElementById('availableBalanceLabel').textContent = '持有数量';
+        document.getElementById('availableBalance').textContent = 
+            `${currentUser.portfolio[stockName] || 0} 股`;
+    }
+    
+    document.getElementById('tradeModal').style.display = 'flex';
+    document.getElementById('tradeAmount').value = 1;
+}
+
+function setMaxAmount() {
+    if (currentTrade) {
+        if (currentTrade.type === 'buy') {
+            const stock = stocks.find(s => s.name === currentTrade.stock);
+            const max = Math.floor(currentUser.balance / stock.price);
+            document.getElementById('tradeAmount').value = max > 0 ? max : 1;
+        } else {
+            document.getElementById('tradeAmount').value = 
+                currentUser.portfolio[currentTrade.stock] || 0;
+        }
+    }
+}
+
+function confirmTrade() {
+    const amount = parseInt(document.getElementById('tradeAmount').value);
+    if (isNaN(amount) || amount < 1) {
+        alert('无效的交易数量');
+        return;
+    }
+
+    if (currentTrade) {
+        const stock = stocks.find(s => s.name === currentTrade.stock);
+        
+        if (currentTrade.type === 'buy') {
+            const cost = amount * stock.price;
+            if (cost > currentUser.balance) {
+                alert('资金不足');
+                return;
+            }
+            
+            currentUser.balance -= cost;
+            currentUser.portfolio[stock.name] = 
+                (currentUser.portfolio[stock.name] || 0) + amount;
+        } else {
+            if (!currentUser.portfolio[stock.name] || 
+                currentUser.portfolio[stock.name] < amount) {
+                alert('持仓不足');
+                return;
+            }
+            
+            currentUser.balance += amount * stock.price;
+            currentUser.portfolio[stock.name] -= amount;
+            
+            if (currentUser.portfolio[stock.name] === 0) {
+                delete currentUser.portfolio[stock.name];
+            }
+        }
+
+        currentUser.history.push({
+            type: currentTrade.type === 'buy' ? '买入股票' : '卖出股票',
+            name: stock.name,
+            amount: amount,
+            price: stock.price,
+            total: amount * stock.price,
+            time: new Date().toLocaleString()
+        });
+    }
+
+    saveUser();
+    updateDisplay();
+    closeModal();
+}
+
+// 商城系统
+function showShop() {
+    const container = document.getElementById('shopItemsList');
+    container.innerHTML = shopItems.map(item => {
+        const owned = currentUser.properties[item.name] || 0;
+        return `
+            <div class="stock-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">${item.emoji} ${item.name}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9em;">
+                            ${item.desc}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--success);">+$${item.income}/秒</div>
+                        <div style="font-size: 0.9em;">
+                            $${item.price.toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                    ${owned > 0 ? `
+                    <button class="button danger-btn" 
+                        onclick="showSell('${item.name}')">
+                        出售 (持有 ${owned})
+                    </button>` : ''}
+                    <button class="button success-btn" 
+                        onclick="buyItem('${item.name}')">
+                        购买
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    document.getElementById('shopModal').style.display = 'flex';
+}
+
+function buyItem(itemName) {
+    const item = shopItems.find(i => i.name === itemName);
+    if (currentUser.balance < item.price) {
+        alert('资金不足');
+        return;
+    }
+    
+    currentUser.balance -= item.price;
+    currentUser.properties[itemName] = (currentUser.properties[itemName] || 0) + 1;
+    
+    currentUser.history.push({
+        type: '购买资产',
+        name: itemName,
+        price: item.price,
+        time: new Date().toLocaleString()
+    });
+    
+    saveUser();
+    showShop();
+    updateDisplay();
+}
+
+function showSell(itemName) {
+    currentSellItem = itemName;
+    const item = shopItems.find(i => i.name === itemName);
+    const owned = currentUser.properties[itemName] || 0;
+    
+    document.getElementById('sellAssetTitle').textContent = `出售 ${itemName}`;
+    document.getElementById('assetPrice').textContent = 
+        `$${(item.price * 0.9).toLocaleString()}`;
+    document.getElementById('assetAmount').textContent = `${owned}x`;
+    
+    document.getElementById('sellAssetModal').style.display = 'flex';
+    document.getElementById('sellAssetAmount').value = 1;
+}
+
+function confirmSellAsset() {
+    const amount = parseInt(document.getElementById('sellAssetAmount').value);
+    if (isNaN(amount) || amount < 1) {
+        alert('无效的数量');
+        return;
+    }
+
+    const item = shopItems.find(i => i.name === currentSellItem);
+    const owned = currentUser.properties[currentSellItem] || 0;
+    
+    if (owned < amount) {
+        alert('持有数量不足');
+        return;
+    }
+    
+    const sellValue = Math.round(item.price * 0.9 * amount);
+    currentUser.balance += sellValue;
+    currentUser.properties[currentSellItem] -= amount;
+    
+    if (currentUser.properties[currentSellItem] === 0) {
+        delete currentUser.properties[currentSellItem];
+    }
+    
+    currentUser.history.push({
+        type: '出售资产',
+        name: currentSellItem,
+        amount: amount,
+        income: sellValue,
+        time: new Date().toLocaleString()
+    });
+    
+    currentSellItem = null;
+    saveUser();
+    updateDisplay();
+    closeSellAssetModal();
+    showShop();
+}
+
+function setMaxAssetAmount() {
+    const owned = currentUser.properties[currentSellItem] || 0;
+    document.getElementById('sellAssetAmount').value = owned;
+}
+
+// 兑换码系统
+const rewardCodes = {
+    "WELCOME": 10000,
+    "MILLIONAIRE": 1000000,
+    "DANIELTAO": 10000000,
+    "RICH2025": 20250,
+    "TAOSTOCK": 100000
+};
+
+function showRedeem() {
+    document.getElementById('redeemModal').style.display = 'flex';
+}
+
+function redeemCode() {
+    const code = document.getElementById('redeemCode').value.trim().toUpperCase();
+    
+    if (!code) {
+        alert('请输入兑换码');
+        return;
+    }
+    if (currentUser.redeemedCodes.includes(code)) {
+        alert('该兑换码已使用');
+        return;
+    }
+    if (!rewardCodes[code]) {
+        alert('无效的兑换码');
+        return;
+    }
+
+    const amount = rewardCodes[code];
+    currentUser.balance += amount;
+    currentUser.redeemedCodes.push(code);
+    
+    currentUser.history.push({
+        type: '兑换奖励',
+        code: code,
+        amount: amount,
+        time: new Date().toLocaleString()
+    });
+
+    saveUser();
+    updateDisplay();
+    alert(`成功兑换 $${amount.toLocaleString()}！`);
+    closeRedeem();
+}
+
+function closeRedeem() {
+    document.getElementById('redeemModal').style.display = 'none';
+}
+
+// 历史记录
+function showHistory() {
+    const container = document.getElementById('historyList');
+    container.innerHTML = currentUser.history.reverse().map(record => {
+        let content = '';
+        const time = `<div style="font-size:0.8em;color:var(--text-secondary)">${record.time}</div>`;
+        
+        switch(record.type) {
+            case '买入股票':
+                content = `
+                    <div style="color:var(--success)">
+                        📈 买入 ${record.name}
+                    </div>
+                    <div>数量: ${record.amount.toLocaleString()} 股</div>
+                    <div>单价: $${record.price.toFixed(2)}</div>
+                    <div>总额: $${record.total.toLocaleString()}</div>
+                `;
+                break;
+            case '卖出股票':
+                content = `
+                    <div style="color:var(--danger)">
+                        📉 卖出 ${record.name}
+                    </div>
+                    <div>数量: ${record.amount.toLocaleString()} 股</div>
+                    <div>单价: $${record.price.toFixed(2)}</div>
+                    <div>总额: $${record.total.toLocaleString()}</div>
+                `;
+                break;
+            case '购买资产':
+                content = `
+                    <div style="color:var(--primary)">
+                        🏪 购买 ${record.name}
+                    </div>
+                    <div>花费: $${record.price.toLocaleString()}</div>
+                `;
+                break;
+            case '出售资产':
+                content = `
+                    <div style="color:var(--danger)">
+                        🏪 出售 ${record.name}
+                    </div>
+                    <div>数量: ${record.amount}x</div>
+                    <div>收入: $${record.income.toLocaleString()}</div>
+                `;
+                break;
+            case '兑换奖励':
+                content = `
+                    <div style="color:var(--success)">
+                        🎁 兑换码: ${record.code}
+                    </div>
+                    <div>获得: $${record.amount.toLocaleString()}</div>
+                `;
+                break;
+            case '房屋升级':
+                content = `
+                    <div style="color:var(--primary)">
+                        🏠 升级到 ${record.level}级房屋
+                    </div>
+                    <div>花费: $${record.cost.toLocaleString()}</div>
+                `;
+                break;
+        }
+
+        return `
+            <div class="card" style="margin:8px 0;padding:12px;">
+                ${content}
+                ${time}
+            </div>
+        `;
+    }).join('') || '<div style="text-align:center;color:var(--text-secondary)">暂无记录</div>';
+    
+    document.getElementById('historyModal').style.display = 'flex';
+}
+
+// 房屋升级系统
+const homeLevelsConfig = [
+    { level: 0, name: "无家可归", cost: 0, income: 0, preview: "🛏️🌌", description: "露宿星空下" },
+    { level: 1, name: "简易棚屋", cost: 50000, income: 10, preview: "🏚️🛏️", description: "简陋的木板房" },
+    { level: 2, name: "温馨小屋", cost: 150000, income: 30, preview: "🏠🛋️🛏️", description: "基础家具齐全" },
+    { level: 3, name: "现代公寓", cost: 500000, income: 100, preview: "🏢🛋️📺", description: "现代装修风格" },
+    { level: 4, name: "联排别墅", cost: 1500000, income: 300, preview: "🏘️🌳🚗", description: "带花园车库" },
+    { level: 5, name: "湖景别墅", cost: 5000000, income: 1000, preview: "🏡🌊⛵", description: "私人湖景阳台" },
+    { level: 6, name: "山顶庄园", cost: 15000000, income: 3000, preview: "🏰⛰️🏊", description: "全景山景泳池" },
+    { level: 7, name: "智能豪宅", cost: 50000000, income: 10000, preview: "🏘️🤖🚁", description: "全屋智能控制" },
+    { level: 8, name: "海滨宫殿", cost: 150000000, income: 30000, preview: "🏯🌅⛱️", description: "私人海滩领地" },
+    { level: 9, name: "天空之城", cost: 500000000, income: 100000, preview: "🛸🌌✨", description: "悬浮空中别墅" },
+    { level: 10, name: "星际堡垒", cost: 1500000000, income: 300000, preview: "🚀🌠🪐", description: "跨星系居住站" }
+];
+
+function showHomeUpgrade() {
+    renderHomeLevels();
+    updateCurrentHomeInfo();
+    document.getElementById('homeModal').style.display = 'flex';
+}
+
+function renderHomeLevels() {
+    const container = document.getElementById('homeLevels');
+    container.innerHTML = homeLevelsConfig.map(level => {
+        const isCurrent = level.level === currentUser.homeLevel;
+        const canUpgrade = level.level === currentUser.homeLevel + 1;
+        const hasEnoughMoney = currentUser.balance >= level.cost;
+        
+        return `
+            <div class="home-level-card ${isCurrent ? 'current' : ''}">
+                ${isCurrent ? `<div class="current-level-badge">当前等级</div>` : ''}
+                <div class="home-preview">${level.preview}</div>
+                <h4>${level.name}</h4>
+                <div style="color: var(--text-secondary); margin: 8px 0;">
+                    等级 ${level.level}
+                </div>
+                ${level.cost > 0 ? `
+                    <div class="upgrade-cost">
+                        💰 ${level.cost.toLocaleString()}
+                    </div>
+                ` : ''}
+                <div style="font-size:0.9em; color:var(--text-secondary); margin: 12px 0;">
+                    ${level.description}
+                </div>
+                ${canUpgrade ? `
+                    <button class="button success-btn" 
+                        ${!hasEnoughMoney ? 'disabled' : ''}
+                        onclick="upgradeHome(${level.level})"
+                        style="width:100%; position: absolute; bottom: 20px; left: 0; padding: 0 20px;">
+                        ${hasEnoughMoney ? '立即升级' : '资金不足'}
+                    </button>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function upgradeHome(targetLevel) {
+    const targetConfig = homeLevelsConfig.find(l => l.level === targetLevel);
+    if (!targetConfig) return alert('无效的等级');
+    if (currentUser.homeLevel + 1 !== targetLevel) return alert('请按顺序升级');
+    if (currentUser.balance < targetConfig.cost) return alert('资金不足');
+
+    if (confirm(`确认花费 $${targetConfig.cost.toLocaleString()} 升级到 ${targetConfig.name} 吗？`)) {
+        currentUser.balance -= targetConfig.cost;
+        currentUser.homeLevel = targetLevel;
+        currentUser.history.push({
+            type: '房屋升级',
+            level: targetLevel,
+            cost: targetConfig.cost,
+            time: new Date().toLocaleString()
+        });
+        
+        saveUser();
+        updateDisplay();
+        renderHomeLevels();
+        updateCurrentHomeInfo();
+        alert(`升级成功！当前房屋等级：${targetLevel}级`);
+    }
+}
+
+function updateCurrentHomeInfo() {
+    const currentConfig = homeLevelsConfig.find(l => l.level === currentUser.homeLevel);
+    document.getElementById('currentHomePreview').textContent = currentConfig.preview;
+    document.getElementById('currentHomeLevel').textContent = currentUser.homeLevel;
+    document.getElementById('homeIncome').textContent = currentConfig.income;
+}
+
+function getHomeTotalCost() {
+    let total = 0;
+    for(let i=0; i<=currentUser.homeLevel; i++) {
+        total += homeLevelsConfig[i].cost;
+    }
+    return total;
+}
+
+function closeHome() {
+    document.getElementById('homeModal').style.display = 'none';
+}
+
+// 工具函数
+function closeModal() {
+    document.getElementById('tradeModal').style.display = 'none';
+}
+
+function closeShop() {
+    document.getElementById('shopModal').style.display = 'none';
+}
+
+function closeHistory() {
+    document.getElementById('historyModal').style.display = 'none';
+}
+
+function closeSellAssetModal() {
+    document.getElementById('sellAssetModal').style.display = 'none';
+}
+
+function updateDisplay() {
+    document.getElementById('totalBalance').textContent = 
+        `$${currentUser.balance.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+
+    let stockValue = 0;
+    Object.entries(currentUser.portfolio).forEach(([name, shares]) => {
+        const stock = stocks.find(s => s.name === name);
+        stockValue += shares * stock.price;
+    });
+
+    const totalAssets = currentUser.balance + stockValue + getHomeTotalCost();
+    document.getElementById('totalBalance').textContent = 
+        `$${totalAssets.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+
+    renderPortfolio();
+}
+
+// 初始化
+document.getElementById('loginView').style.display = 'block';
+document.getElementById('mainView').style.display = 'none';
+</script>
+</body>
+</html>
